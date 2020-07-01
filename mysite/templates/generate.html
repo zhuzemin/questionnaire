@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>生成试卷</title>
+    <style>
+        body {font-family: Arial, Helvetica, sans-serif;}
+        * {box-sizing: border-box;}
+
+        /* Button used to open the contact form - fixed at the bottom of the page */
+        .open-button {
+            background-color: green;
+            color: white;
+            padding: 16px 20px;
+            border: none;
+            cursor: pointer;
+            opacity: 0.8;
+            text-align: center;
+        }
+        .container {
+            width: 200px;
+            clear: both;
+        }
+
+        .container input {
+            width: 100%;
+            clear: both;
+        }
+
+        .container select {
+            width: 100%;
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+
+<h2>生成试卷</h2>
+
+<form id="exam" class="container" action="" method="post">
+    <label for="interviewee">面试者:</label>
+    <input type="text" id="interviewee" name="interviewee" value=""><br>
+    <label for="genre">类别:</label>
+    <select id="genre" name="genre">
+        {% for genre in genres %}
+        <option value={{genre.id}}>{{genre.name}}</option>
+        {% endfor %}
+    </select><br>
+    <label for="quizNum">题数:</label>
+    <input type="text" id="quizNum" name="quizNum" value="10"><br>
+    <label for="duration">时长(分钟):</label>
+    <input type="text" id="duration" name="duration" value="10"><br>
+    <input type="submit" class="open-button" value="生成"><br>
+</form>
+<div style="display:none;">
+    <label for="examUrl">笔试网址:</label><br>
+    <input type="text" id="examUrl" value="">
+
+</div>
+<script src="http://127.0.0.1/jquery-3.1.0.min.js"></script>
+<script src="http://127.0.0.1/jquery.form.js"></script>
+<script>
+    // wait for the DOM to be loaded
+    $(document).ready(function() {
+        // bind 'myForm' and provide a simple callback function
+        $('.container').ajaxForm(function(data) {
+            let examUrl=document.querySelector('#examUrl');
+            examUrl.value=window.location.href.match(/(https?:\/\/[^\/]*)/)[1]+"/exam/?uuid="+data.body.uuid;
+            examUrl.setAttribute('size', examUrl.value.length);
+            examUrl.parentElement.style.display='block';
+        });
+    });
+</script>
+
+
+</body>
+</html>

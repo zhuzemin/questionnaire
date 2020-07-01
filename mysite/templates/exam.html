@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>在线笔试</title>
+    <style>
+        body {font-family: Arial, Helvetica, sans-serif;}
+        * {box-sizing: border-box;}
+
+        /* Button used to open the contact form - fixed at the bottom of the page */
+        .open-button {
+            background-color: green;
+            color: white;
+            padding: 16px 20px;
+            border: none;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+    </style>
+    <script>
+        function openForm() {
+            document.getElementById("myForm").style.display = "block";
+            document.querySelector('.open-button').style.display = "none";
+        }
+    </script>
+</head>
+<body>
+{% if exam %}
+<p>面试者: {{exam.interviewee}}, 您好.</p>
+<p>这是一个简短的笔试, 请点击按钮开始答题.</p>
+{% ifequal exam.status 0 %}
+<button class="open-button" >开始答题</button>
+{% endifequal %}
+{% ifequal exam.status 1 %}
+<button class="open-button" >结束答题</button>
+{% endifequal %}
+<div class="container">
+</div>
+
+{% else %}
+<p>No exams matched your search criteria.</p>
+{% endif %}
+<script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+<script src="http://127.0.0.1/exam.js"></script>
+{% block javascript %}
+<script>
+    $(".open-button").click(
+        function (e) {
+            if(e.target.innerText=="开始答题"){
+                e.target.innerText="载入中...";
+                exam_info();
+                e.target.innerText="结束答题";
+            }
+            else if(e.target.innerText=="结束答题"){
+                finishExam();
+                e.target.innerText="已交卷";
+            }
+        }
+    );
+</script>
+{% ifequal exam.status 0 %}
+{% else %}
+<script>
+    exam_info();
+</script>
+{% endifequal %}
+{% endblock %}
+</body>
+</html>
